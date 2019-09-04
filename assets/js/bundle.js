@@ -792,7 +792,6 @@ var TexturePacker = function () {
   }, {
     key: 'draw',
     value: function draw() {
-
       // TODO: Calc CSS output
 
       var canvas = this.canvas;
@@ -821,7 +820,6 @@ var TexturePacker = function () {
       for (var i = 0; i < this.textures.length; i++) {
         var texture = this.textures[i];
         if (texture.fit) {
-
           if (DEBUG) {
             ctx.fillRect(texture.fit.x + pad, texture.fit.y + pad, texture.w, texture.h);
             ctx.stroke();
@@ -831,7 +829,7 @@ var TexturePacker = function () {
 
           selectorsString += '.' + prefix + texture.name + (i === this.textures.length - 1 ? ' ' : ', ');
 
-          spriteString += '.' + (prefix + texture.name) + ' {width: ' + texture.w + 'px; ' + ('height: ' + texture.h + 'px; ') + ('background-position: ' + ((texture.fit.x + pad) / (width - texture.w) * 100).toPrecision(6) + '% ') + (((texture.fit.y + pad) / (height - texture.h) * 100).toPrecision(6) + '%; ') + ('background-size: ' + (width / texture.w * 100).toPrecision(6) + '%; }\n');
+          spriteString += '.' + (prefix + texture.name) + ' {width: ' + texture.w + 'px; ' + ('height: ' + texture.h + 'px; ') + ('background-position: ' + ((texture.fit.x + pad) / (width - texture.w) * 100).toPrecision(6) + '% ') + (((texture.fit.y + pad) / (height - texture.h) * 100).toPrecision(6) + '%; ') + ('background-size: ' + (width / texture.w * 100).toPrecision(6) + '% ' + (height / texture.h * 100).toPrecision(6) + '%; }\n');
         }
       }
 
@@ -849,7 +847,6 @@ var TexturePacker = function () {
   }, {
     key: 'remove',
     value: function remove(id) {
-
       for (var i = this.textures.length; i--;) {
         var texture = this.textures[i];
         if (texture.id === id) {
@@ -879,7 +876,6 @@ var TexturePacker = function () {
       var padding = _ref2.padding,
           prefix = _ref2.prefix,
           path = _ref2.path;
-
 
       var canvas = this.canvas;
 
@@ -913,7 +909,7 @@ exports.default = TexturePacker;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -921,46 +917,46 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Template = function () {
-    function Template() {
-        _classCallCheck(this, Template);
+  function Template() {
+    _classCallCheck(this, Template);
+  }
+
+  _createClass(Template, [{
+    key: 'listItem',
+    value: function listItem(item) {
+
+      var li = document.createElement('li');
+      var img = document.createElement('img');
+      var info = document.createElement('span');
+      var remove = document.createElement('div');
+
+      li.setAttribute('data-id', item.id);
+
+      img.src = item.src;
+      img.height = 60;
+      img.onload = function () {
+        window.URL.revokeObjectURL(item.src);
+        item.onLoadSuccess({
+          img: this,
+          w: this.naturalWidth,
+          h: this.naturalHeight,
+          name: item.name,
+          id: item.id
+        });
+      };
+
+      li.appendChild(img);
+      info.innerHTML = item.name;
+      li.appendChild(info);
+
+      remove.classList.add('remove');
+      li.appendChild(remove);
+
+      return li;
     }
+  }]);
 
-    _createClass(Template, [{
-        key: 'listItem',
-        value: function listItem(item) {
-
-            var li = document.createElement('li');
-            var img = document.createElement('img');
-            var info = document.createElement('span');
-            var remove = document.createElement('div');
-
-            li.setAttribute('data-id', item.id);
-
-            img.src = item.src;
-            img.height = 60;
-            img.onload = function () {
-                window.URL.revokeObjectURL(item.src);
-                item.onLoadSuccess({
-                    img: this,
-                    w: this.naturalWidth,
-                    h: this.naturalHeight,
-                    name: item.name,
-                    id: item.id
-                });
-            };
-
-            li.appendChild(img);
-            info.innerHTML = item.name;
-            li.appendChild(info);
-
-            remove.classList.add('remove');
-            li.appendChild(remove);
-
-            return li;
-        }
-    }]);
-
-    return Template;
+  return Template;
 }();
 
 exports.default = Template;
@@ -1536,6 +1532,7 @@ E.prototype = {
 };
 
 module.exports = E;
+module.exports.TinyEmitter = E;
 
 
 /***/ }),

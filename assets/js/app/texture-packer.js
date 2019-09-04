@@ -1,5 +1,6 @@
 const DEFAULT_SIZE = 256;
-const GITHUB_URL = '/*\nResponsive CSS Sprite created using: ' +
+const GITHUB_URL =
+  '/*\nResponsive CSS Sprite created using: ' +
   'https://responsive-css.us/\n' +
   '*/\n\n';
 
@@ -8,7 +9,7 @@ const DEBUG = false;
 function findNode(root, w, h) {
   if (root.used) {
     return findNode(root.right, w, h) || findNode(root.down, w, h);
-  } else if ((w <= root.w) && (h <= root.h)) {
+  } else if (w <= root.w && h <= root.h) {
     return root;
   } else {
     return null;
@@ -17,15 +18,13 @@ function findNode(root, w, h) {
 
 function splitNode(node, w, h) {
   node.used = true;
-  node.down = {x: node.x, y: node.y + h, w: node.w, h: node.h - h};
-  node.right = {x: node.x + w, y: node.y, w: node.w - w, h: h};
+  node.down = { x: node.x, y: node.y + h, w: node.w, h: node.h - h };
+  node.right = { x: node.x + w, y: node.y, w: node.w - w, h: h };
   return node;
 }
 
 export default class TexturePacker {
-
-  constructor(canvas, {padding, prefix, path}) {
-
+  constructor(canvas, { padding, prefix, path }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
 
@@ -41,7 +40,6 @@ export default class TexturePacker {
 
     this.prefix = prefix;
     this.path = path;
-
   }
 
   addTexture(texture) {
@@ -79,11 +77,11 @@ export default class TexturePacker {
   resize() {
     let w, h, pad = this.root.p;
     if (this.root.w > this.root.h) {
-      w = (this.root.w + pad);
+      w = this.root.w + pad;
       h = (this.root.h + pad) * 2;
     } else {
       w = (this.root.w + pad) * 2;
-      h = (this.root.h + pad);
+      h = this.root.h + pad;
     }
     this.root = {
       x: 0, // origin x
@@ -96,7 +94,6 @@ export default class TexturePacker {
   }
 
   draw() {
-
     // TODO: Calc CSS output
 
     let canvas = this.canvas;
@@ -108,7 +105,8 @@ export default class TexturePacker {
 
     let computedCSS = '';
     let selectorsString = '';
-    let globalString = '\n{display:inline-block; overflow:hidden; ' +
+    let globalString =
+      '\n{display:inline-block; overflow:hidden; ' +
       'background-repeat: no-repeat;\n' +
       `background-image:url(${this.path});}\n\n`;
     let spriteString = '';
@@ -121,28 +119,36 @@ export default class TexturePacker {
     this.textures.sort((a, b) => {
       let nameA = a.name.toUpperCase();
       let nameB = b.name.toUpperCase();
-      return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+      return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
     });
 
-    for(let i = 0; i < this.textures.length; i++) {
+    for (let i = 0; i < this.textures.length; i++) {
       let texture = this.textures[i];
-      if(texture.fit) {
-
-        if(DEBUG) {
-          ctx.fillRect(texture.fit.x + pad, texture.fit.y + pad, texture.w, texture.h);
+      if (texture.fit) {
+        if (DEBUG) {
+          ctx.fillRect(
+            texture.fit.x + pad,
+            texture.fit.y + pad,
+            texture.w,
+            texture.h
+          );
           ctx.stroke();
         }
 
         ctx.drawImage(texture.img, texture.fit.x + pad, texture.fit.y + pad);
 
-        selectorsString += '.' + prefix + texture.name + (i === this.textures.length - 1 ? ' ' : ', ');
+        selectorsString +=
+          '.' +
+          prefix +
+          texture.name +
+          (i === this.textures.length - 1 ? ' ' : ', ');
 
-        spriteString += `.${prefix + texture.name} {width: ${texture.w}px; ` +
+        spriteString +=
+          `.${prefix + texture.name} {width: ${texture.w}px; ` +
           `height: ${texture.h}px; ` +
-          `background-position: ${(((texture.fit.x + pad) / (width - texture.w)) * 100).toPrecision(6)}% ` +
-          `${(((texture.fit.y + pad) / (height - texture.h)) * 100).toPrecision(6)}%; ` +
-          `background-size: ${((width / texture.w) * 100).toPrecision(6)}%; }\n`;
-
+          `background-position: ${((texture.fit.x + pad) / (width - texture.w) * 100).toPrecision(6)}% ` +
+          `${((texture.fit.y + pad) / (height - texture.h) * 100).toPrecision(6)}%; ` +
+          `background-size: ${(width / texture.w * 100).toPrecision(6)}% ${(height / texture.h * 100).toPrecision(6)}%; }\n`;
       }
     }
 
@@ -151,17 +157,16 @@ export default class TexturePacker {
     return computedCSS;
   }
 
-  pack () {
+  pack() {
     this.sort();
     this.fit();
     return this.draw();
   }
 
-  remove (id) {
-
-    for(let i = this.textures.length; i--;) {
+  remove(id) {
+    for (let i = this.textures.length; i--; ) {
       let texture = this.textures[i];
-      if(texture.id === id) {
+      if (texture.id === id) {
         this.textures.splice(i, 1);
         break;
       }
@@ -181,14 +186,17 @@ export default class TexturePacker {
     };
 
     return this.pack();
-
   }
 
-  updateSettings({padding, prefix, path}) {
-
+  updateSettings({ padding, prefix, path }) {
     let canvas = this.canvas;
 
-    this.ctx.clearRect(0, 0, canvas.width || DEFAULT_SIZE, canvas.height || DEFAULT_SIZE);
+    this.ctx.clearRect(
+      0,
+      0,
+      canvas.width || DEFAULT_SIZE,
+      canvas.height || DEFAULT_SIZE
+    );
 
     this.root = {
       x: 0, // origin x
@@ -202,7 +210,5 @@ export default class TexturePacker {
     this.path = path;
 
     return this.pack();
-
   }
-
 }
